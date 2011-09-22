@@ -20,7 +20,7 @@ void loop(){
     write_number(at);
     at ++;
     if (at > 99) at = 0;
-    delay(500);
+    delay(250);
 }
 
 boolean write_number(int number){
@@ -36,12 +36,6 @@ void shiftData(byte lowdata, byte highdata){
     digitalWrite(data,0);
     digitalWrite(latch,0);
     digitalWrite(clock,0);
-    delay(1);
-    shiftOut(data, clock, MSBFIRST, 0xff);
-    shiftOut(data, clock, MSBFIRST, 0xff);
-    digitalWrite(latch,1);
-    delay(1);
-    digitalWrite(latch,0);
     delay(1);
     shiftOut(data, clock, MSBFIRST, highdata);
     shiftOut(data, clock, MSBFIRST, lowdata);
