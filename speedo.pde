@@ -1,26 +1,41 @@
+#include <NewSoftSerial.h>
+#include <TinyGPS.h>
+
 // shiftOut(dataPin, clockPin, data);
 int data = 10;
 int latch = 11;
 int clock = 12;
-// ser - data input, 
-// rclk - register clock - make it happen,
-// srclk - clock - pulse with each pin
+int tx_pin = 7;
+int rx_pin = 8;
+
+TinyGPS gps;
+NewSoftSerial nss(rx_pin, tx_pin);
 
 void setup(){
     pinMode(data, OUTPUT);
     pinMode(latch, OUTPUT);
     pinMode(clock, OUTPUT);
-    pinMode(13, OUTPUT);
-    
     shiftData(0xf, 0xf4);
-    digitalWrite(13, 1);
+    Serial.begin(9600);
+    shiftData(0xff, 0xff);
 }
-int at = 0;
+
+bool state = false;
+int last_millis = 0;
 void loop(){
-    write_number(at);
-    at ++;
-    if (at > 99) at = 0;
-    delay(250);
+    //write_number(speed);
+    while (nss.available()){
+      int c = nss.read();
+      if (gps.encode(c)){
+        Serial.println(gps.speed());
+      }
+
+      if (millis() - last_millis > 500) {
+        last_millis = millis();
+        state = ! state;
+        digitalWrite(13,state);
+      }
+    }
 }
 
 boolean write_number(int number){
