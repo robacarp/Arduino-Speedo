@@ -27,16 +27,25 @@ void loop(){
 
   if (maintainGps()) {
 
-    gps_data_count ++;
+    //reset dead state counter
     gps_dead_count = 0;
     digitalWrite(13,0);
 
+    //and increment good data counter
+    gps_data_count ++;
+
   } else {
 
+    //if the gps has been dead for a short while
+    //  turn on green LED to indicated possible
+    //  signal loss
     if (gps_data_count > 0 && gps_dead_count > 250) {
       digitalWrite(13,1);
     }
 
+    //if the gps has been dead for a long while
+    //  send the unit back to blinkenlights mode
+    //  until we get reliable data again
     if (gps_dead_count > 2000) {
       gps_data_count = 0;
     }
