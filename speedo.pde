@@ -35,9 +35,13 @@ void loop(){
       display.decimals(false, true);
     }
     display.blank();
+
+  //some real data do display
   } else {
+
     pullGpsData();
 
+    //if we're more or less stopped, show the time
     if (speed <= 2) {
       if (millis_state){
         display.decimals(true, false);
@@ -46,12 +50,14 @@ void loop(){
         display.decimals(false, true);
         display.write(minute);
       }
+
+    //its time for SPEED!
     } else {
-      Serial.println("SPEED");
       display.left_dec = false;
       display.right_dec = false;
       display.write(speed);
     }
+
   }
 }
 
@@ -74,6 +80,7 @@ bool maintainGps(){
 void pullGpsData(){
    gps.crack_datetime(&year,&month,&day,&hour,&minute,&second,&hundredths,&age);
    speed = gps.f_speed_mph();
+
    if (hour > 6)
      hour = hour - 6;
    else
