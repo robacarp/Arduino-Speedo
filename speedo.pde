@@ -6,6 +6,7 @@ TinyGPS gps;
 NewSoftSerial nss(8, 7);
 Display display(10, 11, 12);
 unsigned int gps_data_count = 0;
+unsigned int gps_dead_count = 0;
 bool millis_state = false;
 unsigned long last_millis = 0;
 
@@ -18,13 +19,30 @@ void setup(){
   display.blank();
   nss.begin(9600);
   Serial.begin(115200);
+  pinMode(13, OUTPUT);
 }
 
 void loop(){
   millisCounter();
 
-  if (maintainGps())
+  if (maintainGps()) {
+
     gps_data_count ++;
+    gps_dead_count = 0;
+    digitalWrite(13,0);
+
+  } else {
+
+    if (gps_data_count > 0 && gps_dead_count > 250) {
+      digitalWrite(13,1);
+    }
+
+    if (gps_dead_count > 2000) {
+      gps_data_count = 0;
+    }
+
+    gps_dead_count ++;
+  }
 
   //before any valid gps data comes in, just blinkenlights
   if (gps_data_count == 0){
