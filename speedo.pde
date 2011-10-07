@@ -28,28 +28,22 @@ void loop(){
 
   //before any valid gps data comes in, just blinkenlights
   if (gps_data_count == 0){
-    Serial.println("waiting...");
+
     if (millis_state){
-      display.left_dec = true;
-      display.right_dec = false;
+      display.decimals(true, false);
     } else {
-      display.left_dec = false;
-      display.right_dec = true;
+      display.decimals(false, true);
     }
     display.blank();
   } else {
     pullGpsData();
-    Serial.println("has data...");
 
     if (speed <= 2) {
-      Serial.println("no speed");
       if (millis_state){
-        display.left_dec = true;
-        display.right_dec = false;
+        display.decimals(true, false);
         display.write(hour);
       } else {
-        display.left_dec = false;
-        display.right_dec = true;
+        display.decimals(false, true);
         display.write(minute);
       }
     } else {
